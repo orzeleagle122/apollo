@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 interface IProduct {
     title:string,
-    unitPrice:any,
-    productId:any,
-    category:any,
+    unitPrice:number,
+    productId:number,
+    category:string,
 }
 
 export function Product({title, unitPrice, productId, category}:IProduct) {

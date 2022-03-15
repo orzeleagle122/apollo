@@ -1,27 +1,100 @@
 import {ReactNode, useState} from 'react';
-import { PageHeader, Descriptions, Button, Divider } from 'antd';
+import {PageHeader, Descriptions, Button, Divider, Result} from 'antd';
 import { OrderForm } from './components/OrderForm';
 import {LayoutApp} from "../../components/layout/Layout";
+import {gql, useQuery} from "@apollo/client";
+import {useParams} from "react-router-dom";
+import {Loader} from "../../components/Loader/Loader";
+
+interface IProduct {
+    category: {
+        name:string,
+        categoryID:number,
+    },
+    name:string,
+    productID:number,
+    quantityPerUnit:string,
+    unitPrice:number,
+    supplier:{
+        companyName: string,
+        contactTitle: string,
+        address: {
+            city: string,
+            street: string,
+        }
+    }
+}
+
+const GET_PRODUCT_DETAILS=gql`
+    query GetProductDetails($filter: FilterFindOneProductInput) {
+      viewer {
+        product(filter: $filter) {
+          productID
+          name
+          unitPrice
+          quantityPerUnit
+          category {
+            categoryID
+            name
+          }
+          supplier {
+            companyName
+            contactTitle
+            address {
+              street
+              city
+            }
+          }
+        }
+      }
+    }
+`
 
 function ProductDetails() {
-  const [orderFormVisible, setOrderFormVisible] = useState(false);
+    const {productID}=useParams();
+    const [orderFormVisible, setOrderFormVisible] = useState(false);
+    const {data,loading,error, refetch}=useQuery(GET_PRODUCT_DETAILS,{
+        variables: {
+            filter:productID,
+        }
+    })
 
-  return (
+    if (loading) {
+        return <Loader />
+    }
+
+    if (error) {
+        return (
+            <Result
+                status="500"
+                title="Something went wrong..."
+                subTitle="Please try again or contact with support."
+                extra={[
+                    <Button type="primary" key="retry" onClick={()=>refetch()}>
+                        Retry
+                    </Button>
+                ]}
+            />
+        )
+    }
+    const {product}:{product:IProduct}=data.viewer;
+
+    return (
     <>
       <PageHeader
         className="site-page-header"
         onBack={() => window.history.back()}
-        title="My product name"
+        title={product.name}
       />
       <Descriptions title="Product details" bordered>
-        <Descriptions.Item label="Category">something</Descriptions.Item>
-        <Descriptions.Item label="Unit Price">22$</Descriptions.Item>
-        <Descriptions.Item label="Quantity per unit">10 - 10</Descriptions.Item>
+        <Descriptions.Item label="Category">{product.name}</Descriptions.Item>
+        <Descriptions.Item label="Unit Price">${product.unitPrice}</Descriptions.Item>
+        <Descriptions.Item label="Quantity per unit">{product.quantityPerUnit}</Descriptions.Item>
         <Descriptions.Item label="Address">
-          Company name: New Orleans Cajun Delights, <br />
-          Contact title: Order Administrator, <br />
+          Company name: {product.supplier.companyName}, <br />
+          Contact title: {product.supplier.contactTitle}, <br />
           Address: <br />
-          New Orleans, P.O. Box 78934
+            {product.supplier.address.city} {product.supplier.address.street}
         </Descriptions.Item>
       </Descriptions>
       <Divider />
@@ -32,8 +105,8 @@ function ProductDetails() {
       <OrderForm
         visible={orderFormVisible}
         productDetails={{
-          name: 'My product name',
-          productID: 4
+          name: product.name,
+          productID: product.productID
         }}
         onClose={() => setOrderFormVisible(false)}
       />

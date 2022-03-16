@@ -25,7 +25,7 @@ export function LayoutApp({ children }:IProps) {
           {children}
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>Super Shop App 2021</Footer>
+      <Footer style={{ textAlign: 'center' }}>Super Shop App with Apollo</Footer>
     </Layout>
   )
 }

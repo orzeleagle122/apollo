@@ -5,6 +5,7 @@ import {LayoutApp} from "../../components/layout/Layout";
 import {gql, useQuery} from "@apollo/client";
 import {useParams} from "react-router-dom";
 import {Loader} from "../../components/Loader/Loader";
+import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
 
 interface IProduct {
     category: {
@@ -29,13 +30,10 @@ const GET_PRODUCT_DETAILS=gql`
     query GetProductDetails($filter: FilterFindOneProductInput) {
       viewer {
         product(filter: $filter) {
-          productID
-          name
-          unitPrice
+          ...BasicProduct
           quantityPerUnit
           category {
-            categoryID
-            name
+            ...CategoryFragment
           }
           supplier {
             companyName
@@ -48,6 +46,9 @@ const GET_PRODUCT_DETAILS=gql`
         }
       }
     }
+        
+    ${BASIC_PRODUCT_FRAGMENT}
+    ${CATEGORY_FRAGMENT}
 `
 
 function ProductDetails() {

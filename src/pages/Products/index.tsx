@@ -1,9 +1,10 @@
 import { Row, Col, Empty, Result, Button, Pagination } from 'antd';
 import { Product } from './components/Product';
 import { Loader } from "../../components/Loader/Loader";
-import {gql, useQuery} from "@apollo/client";
+import {gql, useMutation, useQuery} from "@apollo/client";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
 
 interface IProduct {
   name:string,
@@ -11,12 +12,15 @@ interface IProduct {
   productID:number,
   category: {
     name:string,
-  }
+  },
+  _id?:number,
 }
 
 const PER_PAGE=8;
 
 const GET_PRODUCTS = gql`
+    ${BASIC_PRODUCT_FRAGMENT}
+    ${CATEGORY_FRAGMENT}
   query GetProducts($perPage: Int, $page: Int) {
     viewer {
       productPagination(page: $page, perPage: $perPage) {
@@ -25,18 +29,16 @@ const GET_PRODUCTS = gql`
           currentPage
         }
         items {
-          productID
-          name
+          _id
+          ...BasicProduct
           category {
-            categoryID
-            name
+            ...CategoryFragment
           }
-          unitPrice
         }
       }
     }
-  }`
-
+  }
+  `
 
 function ProductsPage() {
   const navigate=useNavigate();
@@ -53,7 +55,7 @@ function ProductsPage() {
   if (loading) {
     return <Loader />
   }
-  
+
   if (error) {
     return (
       <Result

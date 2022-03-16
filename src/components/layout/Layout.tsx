@@ -1,7 +1,8 @@
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu, Breadcrumb,notification } from 'antd';
 import { Link } from "react-router-dom";
 import './Layout.css';
-import {ReactNode} from "react";
+import {ReactNode, useEffect} from "react";
+import {gql, useSubscription} from "@apollo/client";
 
 const { Header, Content, Footer } = Layout;
 
@@ -9,8 +10,31 @@ interface IProps {
     children:ReactNode
 }
 
+const SUBSCRIBE_CREATE_ORDER=gql`
+    subscription {
+        orderCreated{
+            orderID,
+            shipAddress{
+                street
+                city
+            }
+        }
+    }
+`
+
 export function LayoutApp({ children }:IProps) {
-  return (
+    const {data} = useSubscription(SUBSCRIBE_CREATE_ORDER);
+
+    useEffect(()=>{
+        if(data){
+            notification.open({
+                message:`new order create #${data.orderID}`,
+                description:`street ${data.shipAddress.street}, city ${data.shipAddress.city}`
+            })
+        }
+    },[data])
+
+    return (
     <Layout className="layout">
       <Header>
         <div className="logo">Super Shop!</div>

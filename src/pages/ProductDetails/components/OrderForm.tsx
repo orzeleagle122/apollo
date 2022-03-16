@@ -55,7 +55,6 @@ export function OrderForm({ visible, onClose, productDetails }:IOrderForm) {
         postalCode, street, country,city, orderID: generateRandomId(),
       }
     });
-    console.log(values)
   };
 
   return (

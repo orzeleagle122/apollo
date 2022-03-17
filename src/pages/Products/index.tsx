@@ -18,7 +18,7 @@ interface IProduct {
 
 const PER_PAGE=8;
 
-const GET_PRODUCTS = gql`
+export const GET_PRODUCTS = gql`
     ${BASIC_PRODUCT_FRAGMENT}
     ${CATEGORY_FRAGMENT}
   query GetProducts($perPage: Int, $page: Int) {

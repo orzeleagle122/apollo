@@ -11,9 +11,10 @@ interface IOrderForm {
     name:string,
     productID:number,
   },
+  orderRandomId?:number,
 }
 
-const CREATE_ORDER_MUTATION=gql`
+export const CREATE_ORDER_MUTATION=gql`
   mutation CreateOrder($orderID:Float,$street:String,$postalCode:String,$country:String,$city:String){
     createOrder(record: {
       orderID: $orderID,
@@ -29,7 +30,7 @@ const CREATE_ORDER_MUTATION=gql`
   }
 `
 
-export function OrderForm({ visible, onClose, productDetails }:IOrderForm) {
+export function OrderForm({ visible, onClose, productDetails, orderRandomId=generateRandomId() }:IOrderForm) {
   const [isOrdered,setIsOrdered]=useState<boolean>(false);
   const [isError,setIsError]=useState<boolean>(false)
   const [createOrder]=useMutation(CREATE_ORDER_MUTATION,{
@@ -52,7 +53,7 @@ export function OrderForm({ visible, onClose, productDetails }:IOrderForm) {
     const {postalCode,street,country,city}=values;
     createOrder({
       variables:{
-        postalCode, street, country,city, orderID: generateRandomId(),
+        postalCode, street, country,city, orderID: orderRandomId,
       }
     });
   };

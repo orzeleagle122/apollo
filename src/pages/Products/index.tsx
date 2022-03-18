@@ -16,6 +16,10 @@ interface IProduct {
   _id?:number,
 }
 
+type GetProducts = {
+  
+}
+
 const PER_PAGE=8;
 
 export const GET_PRODUCTS = gql`

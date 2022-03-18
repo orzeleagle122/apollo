@@ -1,0 +1,29 @@
+type Product {
+    productID:Int
+    name:String
+    unitPrice:Int
+    quantityPerUnit:String
+    category: Category
+    supplier: Supplier
+}
+
+type Category {
+    categoryID:Int
+    name:String
+}
+
+type Address {
+    street:String
+    city:String
+}
+
+type Supplier {
+    companyName:String
+    contactTitle:String
+    address: Address
+}
+
+type Viewer {
+    product: [Product]
+}
+

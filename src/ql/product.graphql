@@ -1,0 +1,58 @@
+type Product {
+    productID: Float
+    name: String
+    supplierID: Float
+    categoryID: Float
+    quantityPerUnit: String
+    unitPrice: Float
+    unitsInStock: Float
+    unitsOnOrder: Float
+    reorderLevel: Float
+    discontinued: Boolean
+    supplier: Supplier
+    category: Category
+    _id: ID!
+}
+
+type Supplier {
+    supplierID: Float
+    companyName: String
+    contactName: String
+    address: CustomerAddress
+    contactTitle: String
+}
+
+type CustomerAddress {
+    street: String
+    city: String
+    region: String
+    postalCode: String
+    country: String
+    phone: String
+}
+
+type PaginationInfo {
+    currentPage: Int!
+    perPage: Int!
+    pageCount: Int
+    itemCount: Int
+    hasNextPage: Boolean
+    hasPreviousPage: Boolean
+}
+
+type ProductPagination {
+    count: Int
+    items: [Product!]
+    pageInfo: PaginationInfo!
+}
+
+input FilterFindOneProductInput {
+    productID: Float
+    name: String
+}
+
+type Category {
+    categoryID: Float
+    name: String
+    description: String
+}

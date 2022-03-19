@@ -1,0 +1,17 @@
+#input CreateOneOrderPayload {
+#    record: Order
+#}
+#
+#type Order {
+#    orderID: Float
+#    shipAddress: CustomerAddress
+#}
+#
+#type CustomerAddress {
+#    street: String
+#    city: String
+#    region: String
+#    postalCode: String
+#    country: String
+#    phone: String
+#}

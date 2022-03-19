@@ -1,7 +1,7 @@
 import { Row, Col, Empty, Result, Button, Pagination } from 'antd';
 import { Product } from './components/Product';
 import { Loader } from "../../components/Loader/Loader";
-import {gql, useMutation, useQuery} from "@apollo/client";
+import {gql, useQuery} from "@apollo/client";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
@@ -16,35 +16,9 @@ interface IProduct {
   _id?:number,
 }
 
-type GetProducts = {
-  
-}
-
 const PER_PAGE=8;
 
-// export const GET_PRODUCTS = gql`
-//     ${BASIC_PRODUCT_FRAGMENT}
-//     ${CATEGORY_FRAGMENT}
-//   query GetProducts($perPage: Int, $page: Int) {
-//     viewer {
-//       productPagination(page: $page, perPage: $perPage) {
-//         pageInfo {
-//           pageCount
-//           currentPage
-//         }
-//         items {
-//           _id
-//           ...BasicProduct
-//           category {
-//             ...CategoryFragment
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
-
-export const GET_PRODUCTS_2 = gql`
+export const GET_PRODUCTS = gql`
   ${BASIC_PRODUCT_FRAGMENT}
   ${CATEGORY_FRAGMENT}
   query GetProducts($perPage: Int, $page: Int) {
@@ -71,7 +45,7 @@ function ProductsPage() {
   const searchParams=new URLSearchParams(window.location.search);
   const pageParam=parseInt(searchParams.get('page') as string,10);
   const [page,setPage]=useState<number>(pageParam);
-  const {data,loading,error,refetch}=useQuery(GET_PRODUCTS_2,{
+  const {data,loading,error,refetch}=useQuery(GET_PRODUCTS,{
     variables:{
       page,
       perPage: PER_PAGE,
@@ -81,9 +55,8 @@ function ProductsPage() {
   if (loading) {
     return <Loader />
   }
-  console.log(data);
+
   if (error) {
-    console.log(error);
     return (
       <Result
         status="500"

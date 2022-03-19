@@ -6,6 +6,7 @@ import {gql, useQuery} from "@apollo/client";
 import {useParams} from "react-router-dom";
 import {Loader} from "../../components/Loader/Loader";
 import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
+import {GraphQLID, GraphQLInputObjectType, GraphQLString} from "graphql";
 
 interface IProduct {
     category: {
@@ -56,7 +57,9 @@ function ProductDetails() {
     const [orderFormVisible, setOrderFormVisible] = useState(false);
     const {data,loading,error, refetch}=useQuery(GET_PRODUCT_DETAILS,{
         variables: {
-            filter:productID,
+            filter: {
+                productID,
+            },
         }
     })
 

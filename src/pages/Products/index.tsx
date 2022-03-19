@@ -16,11 +16,37 @@ interface IProduct {
   _id?:number,
 }
 
+type GetProducts = {
+  
+}
+
 const PER_PAGE=8;
 
-export const GET_PRODUCTS = gql`
-    ${BASIC_PRODUCT_FRAGMENT}
-    ${CATEGORY_FRAGMENT}
+// export const GET_PRODUCTS = gql`
+//     ${BASIC_PRODUCT_FRAGMENT}
+//     ${CATEGORY_FRAGMENT}
+//   query GetProducts($perPage: Int, $page: Int) {
+//     viewer {
+//       productPagination(page: $page, perPage: $perPage) {
+//         pageInfo {
+//           pageCount
+//           currentPage
+//         }
+//         items {
+//           _id
+//           ...BasicProduct
+//           category {
+//             ...CategoryFragment
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
+
+export const GET_PRODUCTS_2 = gql`
+  ${BASIC_PRODUCT_FRAGMENT}
+  ${CATEGORY_FRAGMENT}
   query GetProducts($perPage: Int, $page: Int) {
     viewer {
       productPagination(page: $page, perPage: $perPage) {
@@ -38,14 +64,14 @@ export const GET_PRODUCTS = gql`
       }
     }
   }
-  `
+`;
 
 function ProductsPage() {
   const navigate=useNavigate();
   const searchParams=new URLSearchParams(window.location.search);
   const pageParam=parseInt(searchParams.get('page') as string,10);
   const [page,setPage]=useState<number>(pageParam);
-  const {data,loading,error,refetch}=useQuery(GET_PRODUCTS,{
+  const {data,loading,error,refetch}=useQuery(GET_PRODUCTS_2,{
     variables:{
       page,
       perPage: PER_PAGE,
@@ -55,8 +81,9 @@ function ProductsPage() {
   if (loading) {
     return <Loader />
   }
-
+  console.log(data);
   if (error) {
+    console.log(error);
     return (
       <Result
         status="500"

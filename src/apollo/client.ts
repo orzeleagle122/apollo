@@ -4,7 +4,7 @@ import { createClient } from 'graphql-ws';
 import {getMainDefinition} from "@apollo/client/utilities";
 
 const wsLink = new GraphQLWsLink(createClient({
-    url: 'ws://graphql-compose.herokuapp.com/northwind/',
+    url: 'wss://graphql-compose.herokuapp.com/northwind/',
 }));
 
 const httpLink = new HttpLink({

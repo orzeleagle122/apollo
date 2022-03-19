@@ -1,0 +1,103 @@
+schema {
+    query: Query
+#    mutation: Viewer
+}
+
+type Query {
+    viewer: Viewer
+}
+
+type  Viewer {
+    productPagination(page: Int, perPage: Int): ProductPagination
+}
+
+type ProductPagination {
+    count: Int
+    items: [Product!]
+    pageInfo: PaginationInfo!
+}
+
+type Product {
+    productID: Float
+    name: String
+    supplierID: Float
+    categoryID: Float
+    quantityPerUnit: String
+    unitPrice: Float
+    unitsInStock: Float
+    unitsOnOrder: Float
+    reorderLevel: Float
+    discontinued: Boolean
+    supplier: Supplier
+    category: Category
+    _id: ID!
+}
+
+type Category {
+    categoryID: Float
+    name: String
+    description: String
+}
+
+type Supplier {
+    supplierID: Float
+    companyName: String
+    contactName: String
+    address: CustomerAddress
+}
+
+type CustomerAddress {
+    street: String
+    city: String
+    region: String
+    postalCode: String
+    country: String
+    phone: String
+}
+
+type PaginationInfo {
+    currentPage: Int!
+    perPage: Int!
+    pageCount: Int
+    itemCount: Int
+    hasNextPage: Boolean
+    hasPreviousPage: Boolean
+}
+
+#
+#type Product {
+#productID:Int
+#name:String
+#unitPrice:Int
+#quantityPerUnit:String
+#category: Category
+#supplier: Supplier
+#}
+#
+#type PageInfo {
+#pageCount: Int
+#currentPage: Int
+#}
+#
+#type ProductPagination {
+#    pageInfo: PageInfo
+#    items: [Product]
+#}
+#
+#type Category {
+#categoryID:Int
+#name:String
+#}
+
+#type Address {
+#street:String
+#city:String
+#}
+#
+#type Supplier {
+#companyName:String
+#contactTitle:String
+#address: Address
+#}
+
+

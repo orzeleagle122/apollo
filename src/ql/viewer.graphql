@@ -1,4 +1,0 @@
-type Viewer {
-    productPagination(page: Int, perPage: Int): ProductPagination
-    product(filter: FilterFindOneProductInput): Product
-}

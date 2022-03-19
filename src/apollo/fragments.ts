@@ -10,7 +10,7 @@ export const BASIC_PRODUCT_FRAGMENT=gql`
 
 export const CATEGORY_FRAGMENT=gql`
     fragment CategoryFragment on Category {
-          categoryID,
+          categoryID
           name
     }
 `

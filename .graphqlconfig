@@ -1,0 +1,4 @@
+{
+  "name": "GraphQL Configuration file",
+  "schemaPath": "schema.graphql"
+}

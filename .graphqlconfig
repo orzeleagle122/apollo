@@ -1,4 +1,15 @@
 {
   "name": "GraphQL Configuration file",
-  "schemaPath": "schema.graphql"
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "Remove GraphQL Endpoint": {
+        "url": "https://graphql-compose.herokuapp.com/northwind/",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        },
+        "introspect": true
+      }
+    }
+  }
 }

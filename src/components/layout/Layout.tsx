@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const SUBSCRIBE_CREATE_ORDER=gql`
-    subscription {
+    subscription CreateOrder {
         orderCreated{
             orderID,
             shipAddress{

@@ -1,6 +1,6 @@
 import {render,waitFor} from "@testing-library/react";
 import {MemoryRouter} from "react-router-dom";
-import ProductsPage, {GET_PRODUCTS_2} from "./index";
+import ProductsPage, {GET_PRODUCTS} from "./index";
 import {MockedProvider} from "@apollo/client/testing";
 
 describe('ProductList',()=>{
@@ -10,7 +10,7 @@ describe('ProductList',()=>{
         const mocks = [
             {
                 request: {
-                    query: GET_PRODUCTS_2,
+                    query: GET_PRODUCTS,
                     variables:{
                         page: 1,
                         perPage: 8,
@@ -68,7 +68,7 @@ describe('ProductList',()=>{
         const mocks = [
             {
                 request: {
-                    query: GET_PRODUCTS_2,
+                    query: GET_PRODUCTS,
                     variables:{
                         page: 1,
                         perPage: 8,

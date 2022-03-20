@@ -17,11 +17,6 @@ const wsLink = new WebSocketLink({
 
 const httpLink = new HttpLink({
     uri: 'https://graphql-compose.herokuapp.com/northwind/',
-    headers: {
-        'x-api-key': 'da2-g462acl3rnclplgtyxmbcqircy',
-        'x-rapidapi-host': 'schedule-import.p.rapidapi.com',
-        'x-rapidapi-key': 'c0b70ff419mshf6abc2a144dfa76p19dbe1jsn4a93647205b3'
-    }
 });
 
 const splitLink = split(

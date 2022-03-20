@@ -1,7 +1,7 @@
 import { Row, Col, Empty, Result, Button, Pagination } from 'antd';
 import { Product } from './components/Product';
 import { Loader } from "../../components/Loader/Loader";
-import {gql, useQuery} from "@apollo/client";
+import {gql, useMutation, useQuery} from "@apollo/client";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
@@ -40,6 +40,38 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
+export const CREATE_PRODUCT=gql`
+  mutation createProduct {
+    createProduct(record: {
+      name: "test",
+      productID: 9835317,
+      unitPrice: 1234,
+      categoryID: 1,
+      quantityPerUnit: "34324",
+      supplierID: 1,
+      unitsOnOrder: 13,
+      unitsInStock: 13,
+    }){
+      record {
+        name
+        productID
+        unitPrice
+        _id
+      }
+    }
+  }
+`;
+
+export const REMOVE_PRODUCT=gql`
+    mutation deleteProduct {
+      removeProduct(filter: {name: "test"}){
+        record {
+          name
+        }
+      }
+    }
+`
+
 function ProductsPage() {
   const navigate=useNavigate();
   const searchParams=new URLSearchParams(window.location.search);
@@ -51,6 +83,11 @@ function ProductsPage() {
       perPage: PER_PAGE,
     }
   });
+
+  const [createProduct]=useMutation(CREATE_PRODUCT,{
+    onQueryUpdated(observableQuery) {
+        return observableQuery.refetch();
+  }});
   
   if (loading) {
     return <Loader />
@@ -103,6 +140,11 @@ function ProductsPage() {
       ) : (
         <Empty />
       )}
+      <button
+        onClick={async()=>{
+          await createProduct();
+        }}
+      >Create Product</button>
     </div>
   )
 }

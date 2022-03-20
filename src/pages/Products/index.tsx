@@ -5,6 +5,7 @@ import {gql, useMutation, useQuery} from "@apollo/client";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
+import {client} from "../../apollo/client";
 
 interface IProduct {
   name:string,
@@ -43,8 +44,8 @@ export const GET_PRODUCTS = gql`
 export const CREATE_PRODUCT=gql`
   mutation createProduct {
     createProduct(record: {
-      name: "test",
-      productID: 9835317,
+      name: "testri",
+      productID: 8835317,
       unitPrice: 1234,
       categoryID: 1,
       quantityPerUnit: "34324",
@@ -85,9 +86,21 @@ function ProductsPage() {
   });
 
   const [createProduct]=useMutation(CREATE_PRODUCT,{
+    // update(cache, response) {
+    //   const data = client.readQuery({
+    //     query: GET_PRODUCTS
+    //   });
+    //   client.writeQuery({
+    //     query: GET_PRODUCTS,
+    //     data: {
+    //       GetProducts: [response.data.record, ...data],
+    //     }
+    //   })
+    // },
     onQueryUpdated(observableQuery) {
         return observableQuery.refetch();
-  }});
+    }
+  });
   
   if (loading) {
     return <Loader />

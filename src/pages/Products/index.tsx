@@ -5,6 +5,8 @@ import {gql, useMutation, useQuery} from "@apollo/client";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
+import { v4 as uuidv4 } from 'uuid';
+import {generateRandomId} from "../../utils/generateRandomId";
 
 interface IProduct {
   name:string,
@@ -41,14 +43,14 @@ export const GET_PRODUCTS = gql`
 `;
 
 export const CREATE_PRODUCT=gql`
-  mutation createProduct {
+  mutation createProduct($supplier: Float) {
     createProduct(record: {
-      name: "test",
-      productID: 9835317,
+      name: "tese4",
+      productID: 1233332,
       unitPrice: 1234,
       categoryID: 1,
       quantityPerUnit: "34324",
-      supplierID: 1,
+      supplierID: $supplier,
       unitsOnOrder: 13,
       unitsInStock: 13,
     }){
@@ -85,9 +87,37 @@ function ProductsPage() {
   });
 
   const [createProduct]=useMutation(CREATE_PRODUCT,{
-    onQueryUpdated(observableQuery) {
-        return observableQuery.refetch();
-  }});
+    variables: {
+      supplier:generateRandomId()
+    },
+
+    update: (cache, {data}) => {
+      const productList = cache.readQuery({
+        query: GET_PRODUCTS,
+      });
+
+      console.log(cache);
+
+      cache.writeQuery({
+        query: GET_PRODUCTS,
+        data: {
+          ...data,
+          data:{
+            ...data.data,
+            ProductPagination: {
+              ...data.data.ProductPagination,
+              items: [...data.data.ProductPagination.items, data.createProduct]
+            }
+          }
+        }
+      })
+    }
+
+    // onQueryUpdated(observableQuery) {
+    //     return observableQuery.refetch();
+    // }
+    // refetchQueries: [{query: GET_PRODUCTS, variables:{}}]
+  });
   
   if (loading) {
     return <Loader />
@@ -142,7 +172,9 @@ function ProductsPage() {
       )}
       <button
         onClick={async()=>{
-          await createProduct();
+          await createProduct({
+            // refetchQueries: [{query: GET_PRODUCTS, variables:{}}]
+          });
         }}
       >Create Product</button>
     </div>

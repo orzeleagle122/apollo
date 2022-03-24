@@ -5,7 +5,6 @@ import {gql, useMutation, useQuery} from "@apollo/client";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
-import { v4 as uuidv4 } from 'uuid';
 import {generateRandomId} from "../../utils/generateRandomId";
 
 interface IProduct {
@@ -58,6 +57,10 @@ export const CREATE_PRODUCT=gql`
         name
         productID
         unitPrice
+        category {
+          categoryID
+          name
+        }
         _id
       }
     }
@@ -91,26 +94,31 @@ function ProductsPage() {
       supplier:generateRandomId()
     },
 
-    update: (cache, {data}) => {
-      const productList = cache.readQuery({
+    update: ( store, { data } ) => {
+      const paginationData = store.readQuery({
         query: GET_PRODUCTS,
-      });
+        variables:{
+          page,
+          perPage: PER_PAGE,
+        }
+      })
 
-      console.log(cache);
-
-      cache.writeQuery({
+      store.writeQuery({
         query: GET_PRODUCTS,
+        variables:{
+          page,
+          perPage: PER_PAGE,
+        },
         data: {
-          ...data,
-          data:{
-            ...data.data,
-            ProductPagination: {
-              ...data.data.ProductPagination,
-              items: [...data.data.ProductPagination.items, data.createProduct]
-            }
+          viewer: {
+            productPagination: {
+              ...data?.viewer?.productPagination,
+              items: [paginationData]
+            },
           }
         }
       })
+
     }
 
     // onQueryUpdated(observableQuery) {

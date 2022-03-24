@@ -5,7 +5,7 @@ import {gql, useMutation, useQuery} from "@apollo/client";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {BASIC_PRODUCT_FRAGMENT, CATEGORY_FRAGMENT} from "../../apollo/fragments";
-import {client} from "../../apollo/client";
+import {generateRandomId} from "../../utils/generateRandomId";
 
 interface IProduct {
   name:string,
@@ -42,14 +42,14 @@ export const GET_PRODUCTS = gql`
 `;
 
 export const CREATE_PRODUCT=gql`
-  mutation createProduct {
+  mutation createProduct($supplier: Float) {
     createProduct(record: {
-      name: "testri",
-      productID: 8835317,
+      name: "tese4",
+      productID: 1233332,
       unitPrice: 1234,
       categoryID: 1,
       quantityPerUnit: "34324",
-      supplierID: 1,
+      supplierID: $supplier,
       unitsOnOrder: 13,
       unitsInStock: 13,
     }){
@@ -57,6 +57,10 @@ export const CREATE_PRODUCT=gql`
         name
         productID
         unitPrice
+        category {
+          categoryID
+          name
+        }
         _id
       }
     }
@@ -86,20 +90,41 @@ function ProductsPage() {
   });
 
   const [createProduct]=useMutation(CREATE_PRODUCT,{
-    // update(cache, response) {
-    //   const data = client.readQuery({
-    //     query: GET_PRODUCTS
-    //   });
-    //   client.writeQuery({
-    //     query: GET_PRODUCTS,
-    //     data: {
-    //       GetProducts: [response.data.record, ...data],
-    //     }
-    //   })
-    // },
-    onQueryUpdated(observableQuery) {
-        return observableQuery.refetch();
+    variables: {
+      supplier:generateRandomId()
+    },
+
+    update: ( store, { data } ) => {
+      const paginationData = store.readQuery({
+        query: GET_PRODUCTS,
+        variables:{
+          page,
+          perPage: PER_PAGE,
+        }
+      })
+
+      store.writeQuery({
+        query: GET_PRODUCTS,
+        variables:{
+          page,
+          perPage: PER_PAGE,
+        },
+        data: {
+          viewer: {
+            productPagination: {
+              ...data?.viewer?.productPagination,
+              items: [paginationData]
+            },
+          }
+        }
+      })
+
     }
+
+    // onQueryUpdated(observableQuery) {
+    //     return observableQuery.refetch();
+    // }
+    // refetchQueries: [{query: GET_PRODUCTS, variables:{}}]
   });
   
   if (loading) {
@@ -155,7 +180,9 @@ function ProductsPage() {
       )}
       <button
         onClick={async()=>{
-          await createProduct();
+          await createProduct({
+            // refetchQueries: [{query: GET_PRODUCTS, variables:{}}]
+          });
         }}
       >Create Product</button>
     </div>
